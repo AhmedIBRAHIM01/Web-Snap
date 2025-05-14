@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {CommonModule} from '@angular/common';
+import {UploadService} from '../upload.service';
 
 @Component({
   selector: 'app-upload',
@@ -9,6 +10,8 @@ import {CommonModule} from '@angular/common';
   styleUrl: './upload.component.scss'
 })
 export class UploadComponent {
+  constructor(private uploadService: UploadService) {
+  }
   selectedFile: File | null=null;
   previewUrl: string | ArrayBuffer | null= null;
 
@@ -31,8 +34,16 @@ export class UploadComponent {
   }
 
   uploadImage():void{
-    if(this.selectedFile){
-      console.log(`Bild zum Hochladen:`, this.selectedFile)
+    if (this.selectedFile) {
+      this.uploadService.uploadImage(this.selectedFile).subscribe({
+        next: (res) => {
+          console.log('Upload erfolgreich:', res);
+          alert('Bild hochgeladen!');
+        },
+        error: (err) => {
+          console.error('Fehler beim Upload:', err);
+        },
+      });
     }
   }
 
